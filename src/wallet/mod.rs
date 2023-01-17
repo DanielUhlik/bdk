@@ -423,6 +423,20 @@ where
             .collect())
     }
 
+    /// Returns the list of spent outputs of this wallet
+    ///
+    /// Note that this method only operates on the internal database, which first needs to be
+    /// [`Wallet::sync`] manually.
+    pub fn list_spent(&self) -> Result<Vec<LocalUtxo>, Error> {
+        Ok(self
+            .database
+            .borrow()
+            .iter_utxos()?
+            .into_iter()
+            .filter(|l| l.is_spent)
+            .collect())
+    }
+
     /// Returns the `UTXO` owned by this wallet corresponding to `outpoint` if it exists in the
     /// wallet's database.
     pub fn get_utxo(&self, outpoint: OutPoint) -> Result<Option<LocalUtxo>, Error> {
